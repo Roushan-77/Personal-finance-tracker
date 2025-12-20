@@ -1,0 +1,217 @@
+{% extends "base.html" %} {% block title %} Finance Dashboard {% endblock %} {%
+block content %}
+
+<h3 class="mb-4">Personal Finance Dashboard</h3>
+
+<!-- FORMS -->
+<div class="row mb-4">
+  <!-- ADD INCOME -->
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header bg-success text-white">Add Income</div>
+      <div class="card-body">
+        <form method="post">
+          <input type="hidden" name="type" value="income" />
+          <input
+            type="hidden"
+            name="month"
+            value="{{ request.args.get('month', '') }}"
+          />
+
+          <div class="mb-2">
+            <label class="form-label">Amount</label>
+            <input
+              type="number"
+              name="amount"
+              class="form-control"
+              placeholder="eg. 10000"
+              required
+            />
+          </div>
+
+          <div class="mb-2">
+            <label class="form-label">Category</label>
+            <input
+              type="text"
+              name="category"
+              class="form-control"
+              placeholder="e.g. Salary, Freelance, Scholarship"
+              required
+            />
+          </div>
+
+          <div class="mb-2">
+            <label class="form-label">Date</label>
+            <input type="date" name="date" class="form-control" required />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Source</label>
+            <input
+              type="text"
+              name="source"
+              class="form-control"
+              placeholder="e.g. Company name, Client, Platform"
+              required
+            />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Description (optional)</label>
+            <textarea
+              class="form-control"
+              name="description"
+              rows="2"
+              placeholder="e.g. January salary, freelance project"
+            ></textarea>
+          </div>
+
+          <div class="form-check mb-3">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              name="recurring"
+              value="1"
+              id="recurringCheck"
+            />
+            <label class="form-check-label" for="recurringCheck">
+              Recurring income
+            </label>
+          </div>
+
+          <button class="btn btn-success w-100">Add Income</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADD EXPENSE -->
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header bg-danger text-white">Add Expense</div>
+      <div class="card-body">
+        <form method="post">
+          <input type="hidden" name="type" value="expense" />
+          <input
+            type="hidden"
+            name="month"
+            value="{{ request.args.get('month', '') }}"
+          />
+
+          <div class="mb-2">
+            <label class="form-label">Amount</label>
+            <input
+              type="number"
+              name="amount"
+              class="form-control"
+              placeholder="e.g. 10000"
+              required
+            />
+          </div>
+
+          <div class="mb-2">
+            <label class="form-label">Category</label>
+            <input
+              type="text"
+              name="category"
+              class="form-control"
+              placeholder="e.g. Food, Travel, Rent, Utilities"
+              required
+            />
+          </div>
+
+          <div class="mb-2">
+            <label class="form-label">Date</label>
+            <input type="date" name="date" class="form-control" required />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Payment Method</label>
+            <input
+              type="text"
+              name="payment_method"
+              class="form-control"
+              placeholder="e.g. UPI, Cash, Credit Card"
+              required
+            />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Description (optional)</label>
+            <textarea
+              class="form-control"
+              name="description"
+              rows="2"
+              placeholder="e.g. groceries, Uber ride, electricity bill"
+            ></textarea>
+          </div>
+
+          <div class="form-check mb-3">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              name="essential"
+              value="1"
+              id="essentialCheck"
+            />
+            <label class="form-check-label" for="essentialCheck">
+              Essential expense
+            </label>
+          </div>
+
+          <button class="btn btn-danger w-100">Add Expense</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="my-4" />
+
+<!--MONTH SELECT-->
+<h5>Monthly Summary</h5>
+
+<form method="get" class="mb-3">
+  <input
+    type="month"
+    name="month"
+    class="form-control d-inline w-auto"
+    value="{{ request.args.get('month', '') }}"
+    required
+  />
+  <button class="btn btn-secondary btn-sm">View</button>
+</form>
+
+<!-- SUMMARY TABLE -->
+{% if summary %}
+<table class="table table-bordered w-50">
+  <thead class="table-dark">
+    <tr>
+      <th>Metric</th>
+      <th>Amount (₹)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Total Income</td>
+      <td>{{ summary.total_income }}</td>
+    </tr>
+    <tr>
+      <td>Total Expense</td>
+      <td>{{ summary.total_expense }}</td>
+    </tr>
+    <tr class="table-success">
+      <td><strong>Savings</strong></td>
+      <td><strong>{{ summary.savings }}</strong></td>
+    </tr>
+  </tbody>
+</table>
+{% endif %}
+
+<!-- PANDAS TABLE -->
+{% if table_html %}
+<hr class="my-4" />
+<h5>Transactions (Pandas View)</h5>
+
+<div class="table-responsive">{{ table_html | safe }}</div>
+{% endif %} {% endblock %}
